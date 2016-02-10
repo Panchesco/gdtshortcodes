@@ -40,7 +40,7 @@ Renders:
 | align | Specifies whether the embedded Tweet should be floated left, right, or center in the page relative to the parent element. | none | `left`, `right`, `center`, `none`
 | hide_media | When set to true, t or 1 links in a Tweet are not expanded to photo, video, or link previews | false | `1`,`0`
 | lang | Request returned HTML and a rendered Tweet in the specified Twitter language supported by embedded Tweets. | |
-| maxwidth | maximum width of the rendered tweet  | 550 | `220` minimum `550` maximum
+| maxwidth | maximum width of the rendered tweet  | 550 | `220` min, `550` max
 
 
 ####Notes
