@@ -37,10 +37,10 @@ class Gdtshortcodes_ext {
     var $settings     = array();
     var $version			= '1.0.0';
     var $name       	= 'Good at Shortcodes';
-    var $description	= 'Render embedded content via shortcodes saved in an channel entry.';
+    var $description	= 'Render embedded content via shortcodes saved in a channel entry.';
     var $settings_exist = 'y';
     var $enabled_shortcodes = array('','twitter','youtube');
-    var $docs_url = 'http://godatdesign.com';
+    var $docs_url = 'https://github.com/Panchesco/gdtshortcodes';
     var $connection;
 
     /**
@@ -86,7 +86,7 @@ class Gdtshortcodes_ext {
 		 *
 		 * @return void
 		 */
-		function activate_extension()
+		public function activate_extension()
 		{
 
 		    $data = array(
@@ -110,7 +110,7 @@ class Gdtshortcodes_ext {
 	 * @param   Array   Settings
 	 * @return  void
 	 */
-	function settings_form($current)
+	public function settings_form($current)
 	{
 	    ee()->load->helper('form');
 	    ee()->load->library('table');
@@ -147,7 +147,7 @@ class Gdtshortcodes_ext {
 	
 	//-----------------------------------------------------------------------------
 	
-	function save_settings()
+	public function save_settings()
 	{
 
 		unset($_POST['submit']);
@@ -194,7 +194,7 @@ class Gdtshortcodes_ext {
  *
  * @return  mixed   void on update / false if none
  */
-function update_extension($current = '')
+public function update_extension($current = '')
 {
     if ($current == '' OR $current == $this->version)
     {
@@ -222,7 +222,7 @@ function update_extension($current = '')
  *
  * @return void
  */
-function disable_extension()
+public function disable_extension()
 {
     ee()->db->where('class', __CLASS__);
     ee()->db->delete('extensions');
@@ -233,7 +233,7 @@ function disable_extension()
  *
  * @return string
  */
-	function render_shortcodes()
+	public function render_shortcodes()
 	{
 			
 		$parsed_template = ee()->TMPL->template;
