@@ -39,7 +39,6 @@ class Gdtshortcodes_ext {
     var $name       	= 'Good at Shortcodes';
     var $description	= 'Render embedded content via shortcodes saved in a channel entry.';
     var $settings_exist = 'y';
-    var $enabled_shortcodes = array('','twitter','youtube');
     var $docs_url = 'https://github.com/Panchesco/gdtshortcodes';
     var $connection;
 
