@@ -37,10 +37,10 @@ Renders:
 
 | Parameter | Description |Default|Options
 | --- | --- | --- | --- |
-| align | Specifies whether the embedded Tweet should be floated left, right, or center in the page relative to the parent element. | none | left, right, center, none
-| hide_media | When set to true, t or 1 links in a Tweet are not expanded to photo, video, or link previews | false
+| align | Specifies whether the embedded Tweet should be floated left, right, or center in the page relative to the parent element. | none | `left`, `right`, `center`, `none`
+| hide_media | When set to true, t or 1 links in a Tweet are not expanded to photo, video, or link previews | false | `1`,`0`
 | lang | Request returned HTML and a rendered Tweet in the specified Twitter language supported by embedded Tweets. | |
-| maxwidth | maximum width of the rendered tweet  | 550 | 220 min 550 max
+| maxwidth | maximum width of the rendered tweet  | 550 | `220` minimum `550` maximum
 
 
 ####Notes
@@ -67,12 +67,12 @@ Renders:
 
 | Parameter | Description |Default|Options
 | --- | --- | --- | --- |
-| controls | Show player controls? | 1 | 1, 0
+| controls | Show player controls? | 1 | `1`, `0`
 | class | CSS class name to assign to iframe | | 
 | class | CSS id to assign to iframe |  | 
 | end | time in seconds to end video|  | 
 | h | iframe height attribute value |  | 
-| rel | Show related videos at end of video? | 1 | 1, 0
+| rel | Show related videos at end of video? | 1 | `1`, `0`
 | start | time in seconds to begin video|  | 
 | w | iframe width attribute value |  | 
 
