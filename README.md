@@ -2,6 +2,7 @@
 
 Render embedded media content via shortcodes saved in an ExpressionEngine channel entry.
 
+- [Instagram](#instagram)
 - [Twitter](#twitter)
 - [YouTube](#youtube)
 
@@ -15,32 +16,44 @@ Render embedded media content via shortcodes saved in an ExpressionEngine channe
 
 ##Shortcodes
 
+
+###Instagram
+
+Embed an Instagram post .
+
+`[ig https://twitter.com/goodnewsfinland/status/697118569633599488]`
+
+Customize the embedded post by appending a query string to its URL.
+
+`[ig https://www.instagram.com/p/8BDpw6tkQr?maxwidth=420&hidecaption=1&omitscript=false]`
+
+
+| Parameter | Description |Default|Options
+| --- | --- | --- | --- |
+| hidecaption | Render the post without a caption. | false | `false`, `true`
+| maxwidth | Set the width of rendered post. | 320 | 
+| omitscript | If set to true, the embed code does not include the Instgram script tag. | false | `false`, `true`
+
+####Notes
+- More parameters and info at the [Instagram Embedding API page](https://www.instagram.com/developer/embedding/#oembed)
+- Place each shortcode on a new line to render multiple posts.
+
 ###Twitter
 
 Embed a tweet in the rendered template for a channel entry field using the "link to Tweet" URL.
 
 `[tweet https://twitter.com/goodnewsfinland/status/697118569633599488]`
 
-Renders:
-
-`<blockquote class="twitter-tweet" data-width="420"><p lang="en" dir="ltr">What causes the aurora borealis?<a href="https://t.co/mGJY3eBuAW">https://t.co/mGJY3eBuAW</a><br>Gorgeous photos in this post!<br><br>Photo © Tor-Ivar Næss <a href="https://t.co/b1Zm0Sp5LV">pic.twitter.com/b1Zm0Sp5LV</a></p>&mdash; EarthSky (@earthskyscience) <a href="https://twitter.com/earthskyscience/status/696755554300071937">February 8, 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>`
-
 Customize the embedded tweet by appending query string to its URL.
 
 `[tweet https://twitter.com/goodnewsfinland/status/697118569633599488?maxwidth=420&hide_media=1&lang=fr]`
-
-Renders:
-
-`<blockquote class="twitter-tweet" data-cards="hidden" data-width="420" data-lang="fr"><p lang="en" dir="ltr">MT <a href="https://twitter.com/DiscoverFinland">@DiscoverFinland</a>: a gorgeous time-lapsed video by <a href="https://twitter.com/henriluoma">@henriluoma</a> of the Finnish nature &amp; Aurora Borealis <a href="https://t.co/fvSUB2oc0a">https://t.co/fvSUB2oc0a</a></p>&mdash; GoodNewsfromFinland (@goodnewsfinland) <a href="https://twitter.com/goodnewsfinland/status/697118569633599488">9 Février 2016</a></blockquote>
-<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>`
 
 | Parameter | Description |Default|Options
 | --- | --- | --- | --- |
 | align | Specifies whether the embedded Tweet should be floated left, right, or center in the page relative to the parent element. | none | `left`, `right`, `center`, `none`
 | hide_media | When set to true, t or 1 links in a Tweet are not expanded to photo, video, or link previews | false | `1`,`0`
 | lang | Request returned HTML and a rendered Tweet in the specified Twitter language supported by embedded Tweets. | |
-| maxwidth | maximum width of the rendered tweet  | 550 | `220` min, `550` max
+| maxwidth | maximum width of the rendered tweet  | 550 |  a number from `220` to `550` 
 
 
 ####Notes

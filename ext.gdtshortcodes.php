@@ -35,7 +35,7 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 class Gdtshortcodes_ext {
 
     var $settings     = array();
-    var $version			= '1.0.0';
+    var $version			= '1.1.0';
     var $name       	= 'Good at Shortcodes';
     var $description	= 'Render embedded content via shortcodes saved in a channel entry.';
     var $settings_exist = 'y';
@@ -71,6 +71,7 @@ class Gdtshortcodes_ext {
 		    			),
 		    	);
 				 } 
+				 
     }
     
     //-----------------------------------------------------------------------------
@@ -117,6 +118,7 @@ class Gdtshortcodes_ext {
 	    $vars = array();
 	
 			$shortcodes = array(
+				'instagram' => 'Instagram',
 				'twitter' => "Twitter",
 				'youtube' => 'YouTube');
 				
@@ -236,6 +238,14 @@ public function disable_extension()
 	{
 			
 		$parsed_template = ee()->TMPL->template;
+		
+		
+		// Instagram 
+		if(in_array('instagram',$this->settings['enabled_shortcodes']))
+		{
+				$pattern = "/\[ig .*]{1}/";
+				$parsed_template = preg_replace_callback($pattern,"self::embed_instagram",$parsed_template);
+		}
 		
 		// Twitter
 		if(in_array('twitter',$this->settings['enabled_shortcodes']))
@@ -390,7 +400,9 @@ public function disable_extension()
 		 		 	
 		 		 	if(isset($response->errors[0]))
 		 		 	{
-		 		 	  return 'Twitter error: ' . $response->errors[0]->code . ' ' . $response->errors[0]->message;
+		 		 	  return '
+		 		 	  Twitter says: ' . $response->errors[0]->code . ' ' . $response->errors[0]->message . '<br>
+		 		 	  ';
 		 		 	
 		 		 	}
 		 		 	
@@ -402,6 +414,58 @@ public function disable_extension()
 	 }
 	
 		//-----------------------------------------------------------------------------
+		
+		/**
+		 * Embed Instagram
+		 * 
+		 * @return string
+		 */
+		 private function embed_instagram($matches)
+		 {
+			 
+			 if(isset($matches[0]))
+			 {
+				 // We need to get the id and options from shortcode.
+		 		$url = preg_replace("/\]|\[ig|www\./",'',$matches[0]);
+		 		$url = str_replace("instagram.com",'instagr.am',$url);
+		 		$url = str_replace("https://",'http://',$url);
+		 		$url = str_replace("?",'&',$url);
+		 		$url = preg_replace("/ {1,}/",'',$url);
+		 		$url = 'https://api.instagram.com/oembed?url=' . $url;
+				
+				$options = array('http' => array(
+        'method'  => 'GET',
+				'ignore_errors' => TRUE,
+        'header'  => 
+            "Content-Type: application/json\r\n"
+				));
+				
+				$context  = stream_context_create($options);
+				$response = file_get_contents($url, false, $context);
+				$data = json_decode($response);
+				
+				if(isset($data->html))
+				{
+					return $data->html;
+					
+					} elseif(ee()->config->item('debug') == 1 && ee()->session->userdata('group_id') == 1) { 
+					
+					// If the response wasn't the json object we expected return an error message for Super Admins
+					return '
+					Instagram says: ' . $response . '<br> 
+					using URL ' . $url . '
+					';
+				}
+
+			 }
+			 
+			 return '';
+		 }
+		 
+		 
+		 //-----------------------------------------------------------------------------
+		
+
 		// END
 }
 // END CLASS
