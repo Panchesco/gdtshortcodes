@@ -21,7 +21,7 @@ Render embedded media content via shortcodes saved in an ExpressionEngine channe
 
 Embed an Instagram post .
 
-`[ig https://twitter.com/goodnewsfinland/status/697118569633599488]`
+`[ig https://www.instagram.com/p/8BDpw6tkQr]`
 
 Customize the embedded post by appending a query string to its URL.
 
