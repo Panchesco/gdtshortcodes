@@ -74,7 +74,7 @@ Customize the player by appending parameters to the YouTube URL query string.
 | --- | --- | --- | --- |
 | controls | Show player controls? | 1 | `1`, `0`
 | class | CSS class name to assign to iframe | | 
-| class | CSS id to assign to iframe |  | 
+| id | CSS id to assign to iframe |  | 
 | end | time in seconds to end video|  | 
 | h | iframe height attribute value |  | 
 | rel | Show related videos at end of video? | 1 | `1`, `0`

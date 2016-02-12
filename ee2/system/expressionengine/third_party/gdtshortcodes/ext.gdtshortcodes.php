@@ -35,7 +35,7 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 class Gdtshortcodes_ext {
 
     var $settings     = array();
-    var $version			= '2.1.0';
+    var $version			= '2.1.2';
     var $name       	= 'Good at Shortcodes';
     var $description	= 'Render embedded content via shortcodes saved in a channel entry.';
     var $settings_exist = 'y';
@@ -280,7 +280,7 @@ public function disable_extension()
 	}
 	
 	//-----------------------------------------------------------------------------
-
+	
 	/**
 	 * Embed a youtube video from parsed shortcode.
 	 * 
@@ -288,12 +288,98 @@ public function disable_extension()
 	 */
 	private function embed_youtube($matches)
 	{	 
+		 $html = '';
+		 $q = '';
+		 
+		 $str = preg_replace("/\[youtube|\]/",'',$matches[0]);
+		 
+		 $str = html_entity_decode($str);
+		 
+		 $parse = parse_url($str,PHP_URL_QUERY);
+		 
+		 parse_str($parse,$vars);
+
+		if(isset($vars['v']))
+		{
+			$html.= '<iframe src="//youtube.com/embed/' . $vars['v'];
+			
+			if(isset($vars['rel']))
+			{
+				$q.= '&amp;rel=' . $vars['rel'];
+			}
+			
+			if(isset($vars['controls']))
+			{
+			
+				$q.= '&amp;controls=' . $vars['controls'];
+			}
+
+			if(isset($vars['showinfo']))
+			{
+				$q.= '&amp;showinfo=' . $vars['showinfo'];
+			}
+			
+			if(isset($vars['start']))
+			{
+				$q.= '&amp;start=' . $vars['start'];
+			}
+			
+			if(isset($vars['end']))
+			{
+				$q.= '&amp;end=' . $vars['end'];
+			}
+			
+			if(strlen($q)>0)
+			{
+				$html.= '?' . trim($q,'&amp;');
+			}
+			
+			$html.= '"';
+			
+			if(isset($vars['w']))
+			{
+				$html.= ' width="' . $vars['w'] . '"';
+			}
+			
+			if(isset($vars['h']))
+			{
+				$html.= ' height="' . $vars['h'] . '"';
+			}
+			
+			if(isset($vars['class']))
+			{
+				$html.= ' class="' . $vars['class'] . '"';
+			}
+			
+			if(isset($vars['id']))
+			{
+				$html.= ' id="' . $vars['id'] . '"';
+			}
+			
+			$html.= ' frameborder="0" allowfullscreen></iframe>';
+		}
+		
+		return $html;
+	 
+	 }
+	
+	//-----------------------------------------------------------------------------
+
+	/**
+	 * oEmbed a youtube video from parsed shortcode.
+	 * 
+	 * @return string.
+	 */
+	private function oembed_youtube($matches)
+	{	 
 		 if($matches[0])
 		 {
 			 
 			 $url = preg_replace("/\[youtube|\s|\]/","",$matches[0]);
 			 
-			 $endpoint = 'https://www.youtube.com/oembed?url=' . urlencode($url . '&format=json');
+			 $url = html_entity_decode($url);
+			 
+			 $endpoint = 'https://www.youtube.com/oembed?url=' . $url . '&format=json';
 			 
 			 $response = $this->curl_get($endpoint);
 			 
@@ -310,7 +396,6 @@ public function disable_extension()
 			 	
 			 		return $response;
 		 		}
-
 		 }
 		 
 		 return '';
