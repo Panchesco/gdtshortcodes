@@ -35,7 +35,7 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 class Gdtshortcodes_ext {
 
     var $settings     = array();
-    var $version			= '2.1.0';
+    var $version			= '2.1.1';
     var $name       	= 'Good at Shortcodes';
     var $description	= 'Render embedded content via shortcodes saved in a channel entry.';
     var $settings_exist = 'y';
@@ -212,8 +212,7 @@ public function disable_extension()
 		// Twitter
 		if(in_array('tweet',$this->settings['enabled_shortcodes']))
 		{
-			
-		
+
 			$this->connection = new TwitterOAuth($this->settings['twitter_consumer_key'],
 																						$this->settings['twitter_consumer_secret'],
 																						$this->settings['twitter_access_token'],
@@ -252,76 +251,32 @@ public function disable_extension()
 	 */
 	private function embed_youtube($matches)
 	{	 
-		 $html = '';
-		 $q = '';
-		 
-		 $str = preg_replace("/\[|\]|youtube/i",'',$matches[0]);
-		 
-		 $parse = parse_url($str,PHP_URL_QUERY);
-		 
-		 parse_str($parse,$vars);
-		 
-		if(isset($vars['v']))
-		{
-			$html.= '<iframe src="//youtube.com/embed/' . $vars['v'];
-			
-			if(isset($vars['rel']))
-			{
-				$q.= '&amp;rel=' . $vars['rel'];
-			}
-			
-			if(isset($vars['controls']))
-			{
-			
-				$q.= '&amp;controls=' . $vars['controls'];
-			}
+		 if($matches[0])
+		 {
+			 
+			 $url = preg_replace("/\[youtube|\s|\]/","",$matches[0]);
+			 
+			 $endpoint = 'https://www.youtube.com/oembed?url=' . urlencode($url . '&format=json');
+			 
+			 $response = $this->curl_get($endpoint);
+			 
+			 $obj = json_decode($response);
 
-			if(isset($vars['showinfo']))
-			{
-				$q.= '&amp;showinfo=' . $vars['showinfo'];
-			}
-			
-			if(isset($vars['start']))
-			{
-				$q.= '&amp;start=' . $vars['start'];
-			}
-			
-			if(isset($vars['end']))
-			{
-				$q.= '&amp;end=' . $vars['end'];
-			}
-			
-			if(strlen($q)>0)
-			{
-				$html.= '?' . trim($q,'&amp;');
-			}
-			
-			$html.= '"';
-			
-			if(isset($vars['w']))
-			{
-				$html.= ' width="' . $vars['w'] . '"';
-			}
-			
-			if(isset($vars['h']))
-			{
-				$html.= ' height="' . $vars['h'] . '"';
-			}
-			
-			if(isset($vars['class']))
-			{
-				$html.= ' class="' . $vars['class'] . '"';
-			}
-			
-			if(isset($vars['id']))
-			{
-				$html.= ' id="' . $vars['id'] . '"';
-			}
-			
-			$html.= ' frameborder="0" allowfullscreen></iframe>';
-		}
-		
-		return $html;
+			 if(is_object($obj))
+			 {
+				 	if(isset($obj->html))
+				 	{
+					 return $obj->html;
+				 	}
+				 
+				 } elseif(ee()->config->item('debug') == 1 && ee()->session->userdata('group_id') == 1) {
+			 	
+			 		return $response;
+		 		}
+
+		 }
+		 
+		 return '';
 	 
 	 }
 	
@@ -339,7 +294,7 @@ public function disable_extension()
 		 if(isset($matches[0]))
 		 {
 		 
-		 $oembed_endpoint = 'http://vimeo.com/api/oembed.json';
+		 $endpoint = 'http://vimeo.com/api/oembed.json';
 		 
 		 // Grab the video url from $matches[0].
 		 
@@ -349,22 +304,28 @@ public function disable_extension()
 		 
 		 $url = str_replace('?','&',$url);
 		 
-		 $url = $oembed_endpoint . '?url=' . $url;
+		 $endpoint.= '?url=' . $url;
 		 
-		 $response = json_decode($this->curl_get($url));
-		 
-		 if(isset($response->html))
-		 {
-			 return $response->html . '<br>' . $url;;
-		 
-		 	} elseif(ee()->config->item('debug') == 1 && ee()->session->userdata('group_id') == 1) {
+		 $response = $this->curl_get($endpoint);
+			 
+			 $obj = json_decode($response);
+
+			 if(is_object($obj))
+			 {
+				 	if(isset($obj->html))
+				 	{
+					 return $obj->html;
+				 	}
+				 
+				 } elseif(ee()->config->item('debug') == 1 && ee()->session->userdata('group_id') == 1) {
 			 	
-			 	return 'Vimeo response empty.';
-		 }
-		 
-		}
+			 		return $response;
+		 		}
+		 		
+		 	}
+		 	
+		 	return '';;
 		
-		return $html;
 	 
 	 }
 	
