@@ -35,7 +35,7 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 class Gdtshortcodes_ext {
 
     var $settings     = array();
-    var $version			= '2.0.0';
+    var $version			= '2.1.0';
     var $name       	= 'Good at Shortcodes';
     var $description	= 'Render embedded content via shortcodes saved in a channel entry.';
     var $settings_exist = 'y';
@@ -43,7 +43,8 @@ class Gdtshortcodes_ext {
     var $shortcode_options = array(
     	'ig' => 'Instagram',
     	'youtube' => 'YouTube',
-    	'tweet' => 'Twitter');
+    	'tweet' => 'Twitter',
+    	'vimeo' => 'Vimeo');
     var $connection;
 
     /**
@@ -163,9 +164,9 @@ public function update_extension($current = '')
         return FALSE;
     }
 
-    if ($current < '1.0')
+    if ($current < '2.1.0')
     {
-        // Update to version 1.0
+        // Update to version 2.1.0
     }
 
     ee()->db->where('class', __CLASS__);
@@ -229,6 +230,14 @@ public function disable_extension()
 				$pattern = "/\[youtube .*]{1}/";
 				$parsed_template = preg_replace_callback($pattern,"self::embed_youtube",$parsed_template);
 		}
+		
+		// Vimeo 
+		if(in_array('vimeo',$this->settings['enabled_shortcodes']))
+		{
+				$pattern = "/\[vimeo .*]{1}/";
+				$parsed_template = preg_replace_callback($pattern,"self::embed_vimeo",$parsed_template);
+		}
+	
 	
 		 return $parsed_template;
 	
@@ -317,6 +326,49 @@ public function disable_extension()
 	 }
 	
 	//-----------------------------------------------------------------------------
+	
+	/**
+	 * Embed a Vimeo video from parsed shortcode.
+	 * 
+	 * @return string.
+	 */
+	private function embed_vimeo($matches)
+	{	 
+		 $html = '';
+		 
+		 if(isset($matches[0]))
+		 {
+		 
+		 $oembed_endpoint = 'http://vimeo.com/api/oembed.json';
+		 
+		 // Grab the video url from $matches[0].
+		 
+		 $url = trim(preg_replace("/\[vimeo|\]/","",$matches[0]));
+		 
+		 $url = htmlspecialchars_decode($url);
+		 
+		 $url = str_replace('?','&',$url);
+		 
+		 $url = $oembed_endpoint . '?url=' . $url;
+		 
+		 $response = json_decode($this->curl_get($url));
+		 
+		 if(isset($response->html))
+		 {
+			 return $response->html . '<br>' . $url;;
+		 
+		 	} elseif(ee()->config->item('debug') == 1 && ee()->session->userdata('group_id') == 1) {
+			 	
+			 	return 'Vimeo response empty.';
+		 }
+		 
+		}
+		
+		return $html;
+	 
+	 }
+	
+	//-----------------------------------------------------------------------------
 		
 	/**
 	 * Embed a tweet.
@@ -396,15 +448,8 @@ public function disable_extension()
 		 		$url = preg_replace("/ {1,}/",'',$url);
 		 		$url = 'https://api.instagram.com/oembed?url=' . $url;
 				
-				$options = array('http' => array(
-        'method'  => 'GET',
-				'ignore_errors' => TRUE,
-        'header'  => 
-            "Content-Type: application/json\r\n"
-				));
 				
-				$context  = stream_context_create($options);
-				$response = file_get_contents($url, false, $context);
+				$response = $this->curl_get($url);
 				$data = json_decode($response);
 				
 				if(isset($data->html))
@@ -425,8 +470,24 @@ public function disable_extension()
 			 return '';
 		 }
 		 
-		 
-		 //-----------------------------------------------------------------------------
+		//-----------------------------------------------------------------------------
+		
+		/**
+		 * Request via cURL.
+		 * @return object
+		 */
+		private function curl_get($url) {
+		
+		$curl = curl_init($url);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+    $return = curl_exec($curl);
+    curl_close($curl);
+    return $return;
+    
+    //-----------------------------------------------------------------------------
+}
 		
 
 		// END

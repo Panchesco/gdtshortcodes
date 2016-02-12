@@ -5,6 +5,7 @@ Render embedded media content via shortcodes saved in an ExpressionEngine channe
 - [Instagram](#instagram)
 - [Twitter](#twitter)
 - [YouTube](#youtube)
+- [Vimeo](#vimeo)
 
 
 ##Installation
@@ -92,4 +93,28 @@ Renders:
 ####Notes
 - Be certain to use the full URL, not a shortened youtu.be style URL
 - Place each shortcode on a new line to render multiple videos.
+
+### Vimeo
+
+Embed a Vimeo video in the rendered template for a channel entry field.
+
+`[vimeo https://vimeo.com/154727398]`
+
+
+Customize the player by appending parameters to the Vimeo URL query string.
+
+`[vimeo https://vimeo.com/154727398?width=800&color=fc0&title=false&byline=false]`
+
+
+| Parameter | Description |Default|Options
+| --- | --- | --- | --- |
+| byline | Show byline? | `true` | `true`, `false`
+| color | Player control color | | 
+| height | Player height | | 
+| width | Player width |  | 
+
+
+####Notes
+- Place each shortcode on a new line to render multiple videos.
+- More info and additional player parameters at [Vimeo API page](https://developer.vimeo.com/apis/oembed)
 
