@@ -50,9 +50,9 @@ Customize the embedded tweet by appending query string to its URL.
 
 | Parameter | Description |Default|Options
 | --- | --- | --- | --- |
-| align | Specifies whether the embedded Tweet should be floated left, right, or center in the page relative to the parent element. | none | `left`, `right`, `center`, `none`
-| hide_media | When set to true, t or 1 links in a Tweet are not expanded to photo, video, or link previews | false | `1`,`0`
-| lang | Request returned HTML and a rendered Tweet in the specified Twitter language supported by embedded Tweets. | |
+| align | Specifies whether the embedded Tweet should be floated left,<br>right, or center in the page relative to the parent element. | none | `left`, `right`, `center`, `none`
+| hide_media | When set to true, t or 1 links in a Tweet<br> are not expanded to photo, video, or link previews | false | `1`,`0`
+| lang | Request returned HTML and a rendered Tweet in the specified <br>Twitter language supported by embedded Tweets. |
 | maxwidth | maximum width of the rendered tweet  | 550 |  a number from `220` to `550` 
 
 ####Notes
