@@ -237,7 +237,6 @@ public function disable_extension()
 				$parsed_template = preg_replace_callback($pattern,"self::embed_vimeo",$parsed_template);
 		}
 	
-	
 		 return $parsed_template;
 	
 	}
@@ -256,7 +255,7 @@ public function disable_extension()
 			 
 			 $url = preg_replace("/\[youtube|\s|\]/","",$matches[0]);
 			 
-			 $endpoint = 'https://www.youtube.com/oembed?url=' . urlencode($url . '&format=json');
+			 $endpoint = 'https://www.youtube.com/oembed?url=' . $url . '&format=json';
 			 
 			 $response = $this->curl_get($endpoint);
 			 
@@ -273,7 +272,6 @@ public function disable_extension()
 			 	
 			 		return $response;
 		 		}
-
 		 }
 		 
 		 return '';
