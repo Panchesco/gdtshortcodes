@@ -21,6 +21,8 @@
  * @author     Richard Whitmer
  * @link       https://github.com/panchesco
  */
+ 
+use Gdt\Gdtshortcodes;
 	
 class Gdtshortcodes_ext {
 
@@ -145,9 +147,9 @@ public function update_extension($current = '')
         return FALSE;
     }
 
-    if ($current < '2.1.0')
+    if ($current < '2.2.0')
     {
-        // Update to version 2.1.0
+        // Update to current version.
     }
 
     ee()->db->where('class', __CLASS__);
