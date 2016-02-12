@@ -17,7 +17,6 @@ Render embedded media content via shortcodes saved in an ExpressionEngine channe
 
 ##Shortcodes
 
-
 ###Instagram
 
 Embed an Instagram post .
@@ -28,7 +27,6 @@ Customize the embedded post by appending a query string to its URL.
 
 `[ig https://www.instagram.com/p/8BDpw6tkQr?maxwidth=420&hidecaption=1&omitscript=false]`
 
-
 | Parameter | Description |Default|Options
 | --- | --- | --- | --- |
 | hidecaption | Render the post without a caption. | false | `false`, `true`
@@ -38,6 +36,7 @@ Customize the embedded post by appending a query string to its URL.
 ####Notes
 - More parameters and info at the [Instagram Embedding API page](https://www.instagram.com/developer/embedding/#oembed)
 - Place each shortcode on a new line to render multiple posts.
+
 
 ###Twitter
 
@@ -56,10 +55,10 @@ Customize the embedded tweet by appending query string to its URL.
 | lang | Request returned HTML and a rendered Tweet in the specified Twitter language supported by embedded Tweets. | |
 | maxwidth | maximum width of the rendered tweet  | 550 |  a number from `220` to `550` 
 
-
 ####Notes
 - More parameters and info at the [Twitter statuses/oembed API page](https://dev.twitter.com/rest/reference/get/statuses/oembed)
 - Place each shortcode on a new line to render multiple tweets.
+
 
 ### YouTube
 
@@ -67,17 +66,9 @@ Embed a YouTube video in the rendered template for a channel entry field.
 
 `[youtube https://www.youtube.com/watch?v=1DXHE4kt3Fw]`
 
-Renders: 
-
-`<iframe src="//youtube.com/embed/1DXHE4kt3Fw" frameborder="0" allowfullscreen></iframe>`
-
 Customize the player by appending parameters to the YouTube URL query string.
 
 `[youtube https://www.youtube.com/watch?v=1DXHE4kt3Fw&w=420&h=315&rel=0&class=my-class-name&controls=0]`
-
-Renders:
-
-`<iframe src="//youtube.com/embed/1DXHE4kt3Fw?rel=0&amp;controls=0" width="420" height="315" class="my-class-name" frameborder="0" allowfullscreen></iframe>`
 
 | Parameter | Description |Default|Options
 | --- | --- | --- | --- |
@@ -94,17 +85,16 @@ Renders:
 - Be certain to use the full URL, not a shortened youtu.be style URL
 - Place each shortcode on a new line to render multiple videos.
 
+
 ### Vimeo
 
 Embed a Vimeo video in the rendered template for a channel entry field.
 
 `[vimeo https://vimeo.com/154727398]`
 
-
 Customize the player by appending parameters to the Vimeo URL query string.
 
 `[vimeo https://vimeo.com/154727398?width=800&color=fc0&title=false&byline=false]`
-
 
 | Parameter | Description |Default|Options
 | --- | --- | --- | --- |
