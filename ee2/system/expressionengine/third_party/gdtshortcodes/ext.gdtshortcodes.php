@@ -21,21 +21,11 @@
  * @author     Richard Whitmer
  * @link       https://github.com/panchesco
  */
- 
-/**
- * We're handling Twitter authentication with Twitter oAuth
- *
- * https://twitteroauth.com/	
- */
-
-require_once("libraries/twitteroauth/autoload.php");
-use Abraham\TwitterOAuth\TwitterOAuth;
-//////////////////////////////////////////////////////
 	
 class Gdtshortcodes_ext {
 
     var $settings     = array();
-    var $version			= '2.1.2';
+    var $version			= '2.2.0';
     var $name       	= 'Good at Shortcodes';
     var $description	= 'Render embedded content via shortcodes saved in a channel entry.';
     var $settings_exist = 'y';
@@ -62,13 +52,7 @@ class Gdtshortcodes_ext {
 				 	} else {
 					 
 					 $this->settings = array(
-		    		'enabled_shortcodes' => array(''),
-		    		'twitter_app' => array(
-		    				'consumer_key' => '',
-		    				'consumer_secret' => '',
-		    				'access_token' => '',
-		    				'access_token_secret' => ''
-		    			),
+		    		'enabled_shortcodes' => array('')
 		    	);
 				 } 
 				 
@@ -122,27 +106,9 @@ class Gdtshortcodes_ext {
 				'twitter' => "Twitter",
 				'youtube' => 'YouTube',
 				'vimeo' => 'Vimeo');
-				
-			$twitter_app = array(
-				'consumer_key' => '',
-				'consumer_secret' => '',
-				'access_token' => '',
-				'access_token_secret' => ''
-			);
-	    															
+															
 	    $vars['settings']['enabled_shortcodes'] =  form_multiselect('enabled_shortcodes[]',$shortcodes,$current['enabled_shortcodes']);
-		  
-		  foreach($twitter_app as $key => $row)
-		  {
-			  
-			  $data = array(
-			  	'name' => 'twitter_app[' . $key . ']',
-			  	'value' => $current['twitter_app'][$key],
-			  	'placeholder' => lang($key)
-			  	);
-			  
-			  $vars['settings']['twitter_app'][$key] = form_input($data);
-		  } 	
+		   	
 		    	
 			return ee()->load->view('index', $vars, TRUE);
 		}
@@ -251,11 +217,6 @@ public function disable_extension()
 		// Twitter
 		if(in_array('twitter',$this->settings['enabled_shortcodes']))
 		{
-			// Set settings['twitter_app'] elements to variables.
-			extract($this->settings['twitter_app']);
-			
-			$this->connection = new TwitterOAuth($consumer_key, $consumer_secret, $access_token, $access_token_secret);
-			
 			$pattern = "/\[tweet .*]{1}/";
 			$parsed_template = preg_replace_callback($pattern,"self::embed_tweet",$parsed_template);
 		
@@ -459,9 +420,6 @@ public function disable_extension()
 	 * Uses Twitter oembed endpoint
 	 * https://dev.twitter.com/rest/reference/get/statuses/oembed
 	 *
-	 * Authentication handled with TwitterOAuth library.
-	 * https://twitteroauth.com/
-	 *
 	 * @return string 
 	 */
 	private function embed_tweet($matches)
@@ -471,7 +429,8 @@ public function disable_extension()
 		 {
 		 		
 		 		// We need to get the id and options from shortcode.
-		 		$url = preg_replace("/\[|\]|tweet/",'',$matches[0]);
+		 		$url = preg_replace("/\[tweet|\s|\]/",'',$matches[0]);
+		 		$url = html_entity_decode($url);
 		 		
 		 		// The tweet id is the last segment of the URL.
 		 		$segments = explode("/",parse_url($url)['path']);
@@ -484,28 +443,36 @@ public function disable_extension()
 		 		 
 		 		 // Fold the id into the options.
 		 		 $params['id'] = $id;
-
-		 		 $response = $this->connection->get('statuses/oembed',$params);
 		 		 
-		 		 if(isset($response->html))
+		 		 $q = '';
+		 		 foreach($params as $key => $row)
 		 		 {
-		 		   return $response->html;
-		 		 } 		 
+			 		 $q.= '&' . $key . '=' . $row;
+		 		 }
+		 		 
+		 		 $q = trim($q,'&');
+		 		 
+		 		 $endpoint =  'https://api.twitter.com/1/statuses/oembed.json?' . $q;
+		 		 
+		 		 		 $response = $this->curl_get($endpoint);
+			 
+			 $obj = json_decode($response);
 
-		 		 // If debugging enabled return errors to Super Admins
-		 		 if(ee()->config->item('debug') == 1 && ee()->session->userdata('group_id') == 1)
-		 		 {
-		 		 	
-		 		 	if(isset($response->errors[0]))
-		 		 	{
-		 		 	  return '
-		 		 	  Twitter says: ' . $response->errors[0]->code . ' ' . $response->errors[0]->message . '<br>
-		 		 	  ';
-		 		 	
-		 		 	}
-		 		 	
-		 		 } 
-		 }
+			 if(is_object($obj))
+			 {
+				 	if(isset($obj->html))
+				 	{
+					 return $obj->html;
+				 	} elseif(isset($obj->errors[0])) {
+					 	
+					 	if(ee()->config->item('debug') == 1 && ee()->session->userdata('group_id') == 1) {
+					 		return $obj->errors[0]->message;
+					 	}
+					 	
+				 	}
+				 
+				 } 
+			 }
 		 
 		 return '';
 
@@ -559,24 +526,21 @@ public function disable_extension()
 		 * Request via cURL.
 		 * @return object
 		 */
-		private function curl_get($url) {
+		private function curl_get($url) 
+		{
+			$curl = curl_init($url);
+    	curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    	curl_setopt($curl, CURLOPT_TIMEOUT, 30);
+    	curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+    	$return = curl_exec($curl);
+    	curl_close($curl);
+    	return $return;
+		}
 		
-		$curl = curl_init($url);
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_TIMEOUT, 30);
-    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
-    $return = curl_exec($curl);
-    curl_close($curl);
-    return $return;
-    
-    //-----------------------------------------------------------------------------
-}
-		
-
-		// END
+		//-----------------------------------------------------------------------------
 		
 
-		// END
+	// END
 }
 // END CLASS
 /* End of file ext.gdtshortcodes.php */

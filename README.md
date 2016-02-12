@@ -13,7 +13,7 @@ Render embedded media content via shortcodes saved in an ExpressionEngine channe
 1. Download and unzip the package directory into /system/user/addons/ 
 2. Install the extension in CP > Add-ons Manager
 3. Once installed, click the settings link for the extension and select the shortcodes you want to enable.
-4. If you'll be embedding tweets, follow the instructions for adding Twitter Application settings. 
+4. Add shortcodes below to render players.
 
 ##Shortcodes
 
