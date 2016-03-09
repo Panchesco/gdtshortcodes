@@ -36,6 +36,7 @@ Customize the embedded post by appending a query string to its URL.
 ####Notes
 - More parameters and info at the [Instagram Embedding API page](https://www.instagram.com/developer/embedding/#oembed)
 - Place each shortcode on a new line to render multiple posts.
+- [How do I get a link (URL) to a photo or video?](https://help.instagram.com/372819389498306)
 
 
 ###Twitter
